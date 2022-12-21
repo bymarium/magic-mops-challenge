@@ -1,21 +1,14 @@
 package co.com.example;
 
-import java.util.Scanner;
-
 public class MagicMops {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nWelcome to magic mops\n");
+    public void start() {
+        Misc.showMessage("Welcome to magic mops");
 
-        System.out.println("Please enter the document number:");
-        String documentNumber = scanner.nextLine();
+        String documentNumber = Misc.getString("Please enter the document number:");
 
-        System.out.println("Enter the price of the cotton mops per dozen:");
-        double cottonPriceM = Double.parseDouble(scanner.nextLine());
-        System.out.println("Enter the price of sponge mops per dozen:");
-        double spongePriceM = Double.parseDouble(scanner.nextLine());
-        System.out.println("Enter the price of the microfiber mops per dozen:");
-        double microfiberPriceM = Double.parseDouble(scanner.nextLine());
+        Float cottonPriceM = Misc.getFloat("Enter the price of the cotton mops per dozen:");
+        Float spongePriceM = Misc.getFloat("Enter the price of sponge mops per dozen:");
+        Float microfiberPriceM = Misc.getFloat("Enter the price of the microfiber mops per dozen:");
 
         int quantityCottonM = 0;
         int quantitySpongeM = 0;
@@ -34,18 +27,16 @@ public class MagicMops {
         double FULL_DISCOUNT1 = 5;
         double FULL_DISCOUNT2 = 7.5;
 
-        System.out.println("\nDozen Mops Price List: \nCotton mop: $" + cottonPriceM + "\nSponge mop: $" + spongePriceM + "\nMicrofiber mop: $" + microfiberPriceM);
+        Misc.showMessage("Dozen Mops Price List: \nCotton mop: $" + cottonPriceM + "\nSponge mop: $" + spongePriceM + "\nMicrofiber mop: $" + microfiberPriceM);
 
         boolean executePurchase = true;
 
         while (executePurchase) {
-            System.out.println("\nPlease enter the number of the type of mop you wish to purchase: \n10 -> Cotton mop \n20 -> Sponge mop \n30 -> Microfiber mop");
-            int mopOption = Integer.parseInt(scanner.nextLine());
+            Integer mopOption = Misc.getInteger("Please enter the number of the type of mop you wish to purchase: \n10 -> Cotton mop \n20 -> Sponge mop \n30 -> Microfiber mop");
 
             switch (mopOption) {
                 case 10:
-                    System.out.println("Enter the number of dozens of cotton mops you wish to purchase:");
-                    quantityCottonM = Integer.parseInt(scanner.nextLine());
+                    quantityCottonM = Misc.getInteger("Enter the number of dozens of cotton mops you wish to purchase:");
                     totalPriceCottonM = cottonPriceM * quantityCottonM;
                     if (quantityCottonM > 18 && quantityCottonM <= 30) {
                         totalPriceCottonM *= 1 - DISCOUNT_COTTON_M1 / 100;
@@ -54,8 +45,7 @@ public class MagicMops {
                     }
                     break;
                 case 20:
-                    System.out.println("Enter the number of dozens of sponge mops you wish to purchase:");
-                    quantitySpongeM = Integer.parseInt(scanner.nextLine());
+                    quantitySpongeM = Misc.getInteger("Enter the number of dozens of sponge mops you wish to purchase:");
                     totalPriceSpongeM = spongePriceM * quantitySpongeM;
                     if (quantitySpongeM > 14 && quantitySpongeM <= 28) {
                         totalPriceSpongeM *= 1 - DISCOUNT_SPONGE_M1 / 100;
@@ -64,19 +54,17 @@ public class MagicMops {
                     }
                     break;
                 case 30:
-                    System.out.println("Enter the number of dozens of microfiber mops you wish to purchase:");
-                    quantityMicrofiberM = Integer.parseInt(scanner.nextLine());
+                    quantityMicrofiberM = Misc.getInteger("Enter the number of dozens of microfiber mops you wish to purchase:");
                     totalPriceMicrofiberM = microfiberPriceM * quantityMicrofiberM;
                     if (quantityMicrofiberM > 12) {
                         totalPriceMicrofiberM *= 1 - DISCOUNT_MICROFIBER_M1 / 100;
                     }
                     break;
                 default:
-                    System.out.println("Invalid option");
+                    Misc.showMessage("Invalid option");
             }
 
-            System.out.println("Do you want to continue shopping?? (s/n)");
-            char makePurchase = scanner.nextLine().toLowerCase().charAt(0);
+            Character makePurchase = Misc.getString("Do you want to continue shopping? (s/n)").toLowerCase().charAt(0);
             switch (makePurchase) {
                 case 's':
                     executePurchase = true;
@@ -87,42 +75,43 @@ public class MagicMops {
                     int totalQuantityUnit = fullQuantityDozen * 12;
                     double totalPrice = totalPriceCottonM + totalPriceSpongeM + totalPriceMicrofiberM;
 
-                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24){
+                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24) {
                         totalPrice *= 1 - FULL_DISCOUNT1 / 100;
                     } else if (fullQuantityDozen > 24) {
                         totalPrice *= 1 - FULL_DISCOUNT2 / 100;
                     }
 
-                    System.out.println("*****************INVOICE***************** \nUser: " + documentNumber + "\nTotal amount in dozens: " + fullQuantityDozen + "\nTotal quantity in units: " + totalQuantityUnit + "\nFull price to pay: $" + totalPrice);
-                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24){
-                        System.out.println("You got an extra discount from " + FULL_DISCOUNT1 + "%");
+                    Misc.showMessage("*****************INVOICE***************** \nUser: " + documentNumber + "\nTotal amount in dozens: " + fullQuantityDozen + "\nTotal quantity in units: " + totalQuantityUnit + "\nFull price to pay: $" + totalPrice);
+                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24) {
+                        Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT1 + "%");
                     } else if (fullQuantityDozen > 24) {
-                        System.out.println("You got an extra discount from " + FULL_DISCOUNT2 + "%");
+                        Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT2 + "%");
                     }
 
-                    System.out.println("\n************INVOICE DETAILS************* \nCotton mops \nQuantity: " + quantityCottonM + "\nPrice: $" + totalPriceCottonM);
+                    Misc.showMessage("************INVOICE DETAILS************* \nCotton mops \nQuantity: " + quantityCottonM + "\nPrice: $" + totalPriceCottonM);
                     if (quantityCottonM > 18 && quantityCottonM <= 30) {
-                        System.out.println("You got a discount from " + DISCOUNT_COTTON_M1 + "%");
+                        Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT2 + "%");
                     } else if (quantityCottonM > 30) {
-                        System.out.println("You got a discount from " + DISCOUNT_COTTON_M2 + "%");
+                        Misc.showMessage("You got a discount from " + DISCOUNT_COTTON_M2 + "%");
                     }
 
-                    System.out.println("----------------------------------------- \nSponge mops \nQuantity: " + quantitySpongeM + "\nPrice: $" + totalPriceSpongeM);
+
+                    Misc.showMessage("----------------------------------------- \nSponge mops \nQuantity: " + quantitySpongeM + "\nPrice: $" + totalPriceSpongeM);
                     if (quantitySpongeM > 14 && quantitySpongeM <= 28) {
-                        System.out.println("You got a discount from " + DISCOUNT_SPONGE_M1 + "%");
+                        Misc.showMessage("You got a discount from " + DISCOUNT_SPONGE_M1 + "%");
                     } else if (quantitySpongeM > 28) {
-                        System.out.println("You got a discount from " + DISCOUNT_SPONGE_M2 + "%");
+                        Misc.showMessage("You got a discount from " + DISCOUNT_SPONGE_M2 + "%");
                     }
 
-                    System.out.println("----------------------------------------- \nMicrofiber mops \nQuantity: " + quantityMicrofiberM + "\nPrice: $" + totalPriceMicrofiberM);
-                    if (quantityMicrofiberM > 12){
-                        System.out.println("You got a discount from " + DISCOUNT_MICROFIBER_M1 + "%");
-                        break;
+                    Misc.showMessage("----------------------------------------- \nMicrofiber mops \nQuantity: " + quantityMicrofiberM + "\nPrice: $" + totalPriceMicrofiberM);
+                    if (quantityMicrofiberM > 12) {
+                        Misc.showMessage("You got a discount from " + DISCOUNT_MICROFIBER_M1 + "%");
                     }
+                    break;
                 default:
-                    System.out.println("Invalid option");
+                    Misc.showMessage("Invalid option");
             }
         }
-        System.out.println("\nWe wish you a happy day!");
+        Misc.showMessage("\nWe wish you a happy day!");
     }
 }
