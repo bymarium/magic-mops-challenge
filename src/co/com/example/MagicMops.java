@@ -10,22 +10,22 @@ public class MagicMops {
         Float spongePriceM = Misc.getFloat("Enter the price of sponge mops per dozen:");
         Float microfiberPriceM = Misc.getFloat("Enter the price of the microfiber mops per dozen:");
 
-        int quantityCottonM = 0;
-        int quantitySpongeM = 0;
-        int quantityMicrofiberM = 0;
+        Integer quantityCottonM = 0;
+        Integer quantitySpongeM = 0;
+        Integer quantityMicrofiberM = 0;
 
-        double totalPriceCottonM = 0;
-        double totalPriceSpongeM = 0;
-        double totalPriceMicrofiberM = 0;
+        Float totalPriceCottonM = 0f;
+        Float totalPriceSpongeM = 0f;
+        Float totalPriceMicrofiberM = 0f;
 
-        double DISCOUNT_COTTON_M1 = 10.72;
-        double DISCOUNT_COTTON_M2 = 20.25;
-        double DISCOUNT_SPONGE_M1 = 15.25;
-        double DISCOUNT_SPONGE_M2 = 20.15;
-        double DISCOUNT_MICROFIBER_M1 = 20.2;
+        Float DISCOUNT_COTTON_M1 = 10.72f;
+        Float DISCOUNT_COTTON_M2 = 20.25f;
+        Float DISCOUNT_SPONGE_M1 = 15.25f;
+        Float DISCOUNT_SPONGE_M2 = 20.15f;
+        Float DISCOUNT_MICROFIBER_M1 = 20.2f;
 
-        double FULL_DISCOUNT1 = 5;
-        double FULL_DISCOUNT2 = 7.5;
+        Float FULL_DISCOUNT1 = 5f;
+        Float FULL_DISCOUNT2 = 7.5f;
 
         Misc.showMessage("Dozen Mops Price List: \nCotton mop: $" + cottonPriceM + "\nSponge mop: $" + spongePriceM + "\nMicrofiber mop: $" + microfiberPriceM);
 
@@ -37,28 +37,15 @@ public class MagicMops {
             switch (mopOption) {
                 case 10:
                     quantityCottonM = Misc.getInteger("Enter the number of dozens of cotton mops you wish to purchase:");
-                    totalPriceCottonM = cottonPriceM * quantityCottonM;
-                    if (quantityCottonM > 18 && quantityCottonM <= 30) {
-                        totalPriceCottonM *= 1 - DISCOUNT_COTTON_M1 / 100;
-                    } else if (quantityCottonM > 30) {
-                        totalPriceCottonM *= 1 - DISCOUNT_COTTON_M2 / 100;
-                    }
+                    totalPriceCottonM = calculateTotalPriceCotton(cottonPriceM, quantityCottonM, DISCOUNT_COTTON_M1, DISCOUNT_COTTON_M2);
                     break;
                 case 20:
                     quantitySpongeM = Misc.getInteger("Enter the number of dozens of sponge mops you wish to purchase:");
-                    totalPriceSpongeM = spongePriceM * quantitySpongeM;
-                    if (quantitySpongeM > 14 && quantitySpongeM <= 28) {
-                        totalPriceSpongeM *= 1 - DISCOUNT_SPONGE_M1 / 100;
-                    } else if (quantitySpongeM > 28) {
-                        totalPriceSpongeM *= 1 - DISCOUNT_SPONGE_M2 / 100;
-                    }
+                    totalPriceSpongeM = calculateTotalPriceSponge(spongePriceM, quantitySpongeM, DISCOUNT_SPONGE_M1, DISCOUNT_SPONGE_M2);
                     break;
                 case 30:
                     quantityMicrofiberM = Misc.getInteger("Enter the number of dozens of microfiber mops you wish to purchase:");
-                    totalPriceMicrofiberM = microfiberPriceM * quantityMicrofiberM;
-                    if (quantityMicrofiberM > 12) {
-                        totalPriceMicrofiberM *= 1 - DISCOUNT_MICROFIBER_M1 / 100;
-                    }
+                    totalPriceMicrofiberM = calculateTotalPriceMicrofiber(microfiberPriceM, quantityMicrofiberM, DISCOUNT_MICROFIBER_M1);
                     break;
                 default:
                     Misc.showMessage("Invalid option");
@@ -76,9 +63,9 @@ public class MagicMops {
                     double totalPrice = totalPriceCottonM + totalPriceSpongeM + totalPriceMicrofiberM;
 
                     if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24) {
-                        totalPrice *= 1 - FULL_DISCOUNT1 / 100;
+                        totalPrice *= calculateDiscount(FULL_DISCOUNT1);
                     } else if (fullQuantityDozen > 24) {
-                        totalPrice *= 1 - FULL_DISCOUNT2 / 100;
+                        totalPrice *= calculateDiscount(FULL_DISCOUNT2);
                     }
 
                     Misc.showMessage("*****************INVOICE***************** \nUser: " + documentNumber + "\nTotal amount in dozens: " + fullQuantityDozen + "\nTotal quantity in units: " + totalQuantityUnit + "\nFull price to pay: $" + totalPrice);
@@ -90,7 +77,7 @@ public class MagicMops {
 
                     Misc.showMessage("************INVOICE DETAILS************* \nCotton mops \nQuantity: " + quantityCottonM + "\nPrice: $" + totalPriceCottonM);
                     if (quantityCottonM > 18 && quantityCottonM <= 30) {
-                        Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT2 + "%");
+                        Misc.showMessage("You got an extra discount from " + DISCOUNT_COTTON_M1 + "%");
                     } else if (quantityCottonM > 30) {
                         Misc.showMessage("You got a discount from " + DISCOUNT_COTTON_M2 + "%");
                     }
@@ -113,5 +100,44 @@ public class MagicMops {
             }
         }
         Misc.showMessage("\nWe wish you a happy day!");
+    }
+
+    public Float calculateDiscount(Float discount) {
+        return 1 - discount / 100;
+    }
+
+    public Float calculateTotalPriceCotton(Float price, Integer quantity, Float discount1, Float discount2) {
+        Float totalPrice = price * quantity;
+        if (validateQuantityRange(quantity, 18, 30)) {
+            totalPrice *= calculateDiscount(discount1);
+        } else if (validateQuantityRange(quantity, 30, 0)) {
+            totalPrice *= calculateDiscount(discount2);
+        }
+        return totalPrice;
+    }
+
+    public Boolean validateQuantityRange(Integer quantity, Integer lowerLimit, Integer upperLimit) {
+        if (upperLimit == 0) {
+            return quantity > lowerLimit;
+        }
+        return quantity > lowerLimit && quantity <= upperLimit;
+    }
+
+    public Float calculateTotalPriceSponge(Float price, Integer quantity, Float discount1, Float discount2) {
+        Float totalPrice = price * quantity;
+        if (validateQuantityRange(quantity, 14, 28)) {
+            totalPrice *= calculateDiscount(discount1);
+        } else if (validateQuantityRange(quantity, 28, 0)) {
+            totalPrice *= calculateDiscount(discount2);
+        }
+        return totalPrice;
+    }
+
+    public Float calculateTotalPriceMicrofiber(Float price, Integer quantity, Float discount) {
+        Float totalPrice = price * quantity;
+        if (validateQuantityRange(quantity, 12, 0)) {
+            totalPrice *= calculateDiscount(discount);
+        }
+        return totalPrice;
     }
 }
