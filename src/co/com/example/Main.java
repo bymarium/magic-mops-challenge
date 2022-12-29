@@ -5,7 +5,6 @@ public class Main {
         MagicMops magicMops = new MagicMops();
         magicMops.start();
     }
-
 }
 
 

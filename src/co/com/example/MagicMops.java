@@ -58,20 +58,13 @@ public class MagicMops {
                     break;
                 case 'n':
                     executePurchase = false;
-                    int fullQuantityDozen = quantityCottonM + quantitySpongeM + quantityMicrofiberM;
-                    int totalQuantityUnit = fullQuantityDozen * 12;
-                    double totalPrice = totalPriceCottonM + totalPriceSpongeM + totalPriceMicrofiberM;
+                    Integer totalQuantityDozen = calculateTotalQuantityDozen(quantityCottonM, quantitySpongeM, quantityMicrofiberM);
+                    Integer totalQuantityUnit = totalQuantityDozen * 12;
 
-                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24) {
-                        totalPrice *= calculateDiscount(FULL_DISCOUNT1);
-                    } else if (fullQuantityDozen > 24) {
-                        totalPrice *= calculateDiscount(FULL_DISCOUNT2);
-                    }
-
-                    Misc.showMessage("*****************INVOICE***************** \nUser: " + documentNumber + "\nTotal amount in dozens: " + fullQuantityDozen + "\nTotal quantity in units: " + totalQuantityUnit + "\nFull price to pay: $" + totalPrice);
-                    if (fullQuantityDozen >= 18 && fullQuantityDozen <= 24) {
+                    Misc.showMessage("*****************INVOICE***************** \nUser: " + documentNumber + "\nTotal amount in dozens: " + totalQuantityDozen + "\nTotal quantity in units: " + totalQuantityUnit + "\nFull price to pay: $" + calculateTotalPrice(FULL_DISCOUNT1, FULL_DISCOUNT2, totalQuantityDozen, calculateTotalPriceDozen(totalPriceCottonM, totalPriceSpongeM, totalPriceMicrofiberM)));
+                    if (totalQuantityDozen >= 18 && totalQuantityDozen <= 24) {
                         Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT1 + "%");
-                    } else if (fullQuantityDozen > 24) {
+                    } else if (totalQuantityDozen > 24) {
                         Misc.showMessage("You got an extra discount from " + FULL_DISCOUNT2 + "%");
                     }
 
@@ -116,13 +109,6 @@ public class MagicMops {
         return totalPrice;
     }
 
-    public Boolean validateQuantityRange(Integer quantity, Integer lowerLimit, Integer upperLimit) {
-        if (upperLimit == 0) {
-            return quantity > lowerLimit;
-        }
-        return quantity > lowerLimit && quantity <= upperLimit;
-    }
-
     public Float calculateTotalPriceSponge(Float price, Integer quantity, Float discount1, Float discount2) {
         Float totalPrice = price * quantity;
         if (validateQuantityRange(quantity, 14, 28)) {
@@ -139,5 +125,29 @@ public class MagicMops {
             totalPrice *= calculateDiscount(discount);
         }
         return totalPrice;
+    }
+
+    public Boolean validateQuantityRange(Integer quantity, Integer lowerLimit, Integer upperLimit) {
+        if (upperLimit == 0) {
+            return quantity > lowerLimit;
+        }
+        return quantity > lowerLimit && quantity <= upperLimit;
+    }
+
+    public Float calculateTotalPrice(Float discount1, Float discount2, Integer totalQuantity, Float totalPrice) {
+        if (validateQuantityRange(totalQuantity, 18, 24)) {
+            totalPrice *= calculateDiscount(discount1);
+        } else if (validateQuantityRange(totalQuantity, 24, 0)) {
+            totalPrice *= calculateDiscount(discount2);
+        }
+        return totalPrice;
+    }
+
+    public Integer calculateTotalQuantityDozen(Integer quantityCottonM, Integer quantitySpongeM, Integer quantityMicrofiberM) {
+        return quantityCottonM + quantitySpongeM + quantityMicrofiberM;
+    }
+
+    public Float calculateTotalPriceDozen(Float totalPriceCottonM, Float totalPriceSpongeM, Float totalPriceMicrofiberM) {
+        return totalPriceCottonM + totalPriceSpongeM + totalPriceMicrofiberM;
     }
 }
